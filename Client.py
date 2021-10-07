@@ -236,7 +236,7 @@ class Client:
 
             proximity_matrix = pairwise_distances(X, X, metric=distance)
             best_k, best_cluster = Client.clustering_repository.getData(
-                X, len(number_of_sentences), list(proximity_matrix))
+                X, len(number_of_sentences), proximity_matrix.tolist())
             if np.all(best_cluster == best_cluster[0]):
                 noun_ent_type_array = Client.spacy_repository.get_noun_chunks_with_entity_type_prediction(
                     summary)
