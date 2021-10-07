@@ -3,7 +3,7 @@ coeus project
 
 ### Setup
     0.create virtual environment `python3 -m venv venv` and activate `source venv/bin/activate`
-    1.install package according to requirement.txt `pip3 install sentencepiece spacy nltk tensorflow requests numpy torch`
+    1.install package according to requirement.txt `pip3 install sentencepiece spacy nltk requests numpy torch flask python-dotenv`
     2.run `python3 -m spacy download en_core_web_lg`
     
 ### Contribution
