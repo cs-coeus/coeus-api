@@ -1,7 +1,6 @@
 from repositories.DataRepository import DataRepository
 import requests
 from urllib.parse import unquote
-from typing import Any, List
 
 
 class WikipediaRepository(DataRepository):

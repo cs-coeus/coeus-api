@@ -1,23 +1,25 @@
 from sklearn.metrics import pairwise_distances
 from utils.InputPreparator import InputPreparator
 from utils.OutputPreparator import OutputPreparator
-from models.ModelSummarizer import ModelSummarizer
-from models.ModelQA import ModelQA
-from models.ModelClustering import ModelClustering
-from models.ModelSpacy import ModelSpacy
 from repositories.WikipediaRepository import WikipediaRepository
+from repositories.SummarizerModelRepository import SummarizerModelRepository
+from repositories.QuestionAnswerModelRepository import QuestionAnswerModelRepository
+from repositories.ClusteringModelRepository import ClusteringModelRepository
+from repositories.SpacyModelRepository import SpacyModelRepository
 from functools import reduce
 import numpy as np
+import gensim.downloader as api
 
 
 class Client:
 
     def __init__(self):
         Client.input_preparator = InputPreparator()
-        Client.summarize_model = ModelSummarizer()
-        Client.qa_model = ModelQA()
-        Client.clustering_model = ModelClustering()
-        Client.spacy_model = ModelSpacy()
+        Client.wmd = api.load('word2vec-google-news-300')
+        Client.summarize_repository = SummarizerModelRepository()
+        Client.qa_repository = QuestionAnswerModelRepository()
+        Client.clustering_repository = ClusteringModelRepository()
+        Client.spacy_repository = SpacyModelRepository()
         Client.wikipedia_repository = WikipediaRepository()
         Client.output_preparator = OutputPreparator()
         Client.paragraph_escape_character = '_paragraph'
@@ -64,7 +66,7 @@ class Client:
                                 for paragraph in paragraph_array_of_array]
         full_text = reduce(
             lambda body_1,
-            body_2: body_1 + '\n' + body_2,
+                   body_2: body_1 + '\n' + body_2,
             paragraph_text_array)
 
         output = Client.convert_to_final_json(
@@ -100,7 +102,7 @@ class Client:
                     dictionary[article_path[0]] = dict()
                 elif not is_topic:
                     dictionary[article_path[0]
-                               ][Client.paragraph_escape_character] = current_text_in_paragraph
+                    ][Client.paragraph_escape_character] = current_text_in_paragraph
             elif len(article_path) > 1:
                 curr_dict = dictionary.get(article_path[0])
                 recursive_generate_dictionary_from_paragraphs_array(
@@ -202,12 +204,11 @@ class Client:
             _get_id,
             _get_node):
         MIN_SENTENCE_THRESHOLD = 7
-        summary = Client.summarize_model.predict(curr_sentence)
-        spacy_doc_from_summary = Client.spacy_model.predict(summary)
-        sentences = list(spacy_doc_from_summary.sents)
-        if len(sentences) <= MIN_SENTENCE_THRESHOLD:
-            noun_ent_type_array = Client.spacy_model.convert_spacy_object_to_noun_chunk_and_entity_type_array(
-                spacy_doc_from_summary)
+        summary = Client.summarize_repository.getData(curr_sentence)
+        number_of_sentences = Client.spacy_repository.get_sentence_count_prediction(summary)
+        if number_of_sentences <= MIN_SENTENCE_THRESHOLD:
+            noun_ent_type_array = Client.spacy_repository.get_noun_chunks_with_entity_type_prediction(
+                summary)
             for noun, entity_type in noun_ent_type_array:
                 current_level_node = _get_node(
                     _get_id(_common_data), noun, _parent_id)
@@ -216,7 +217,7 @@ class Client:
                     _this_paragraph_dictionary[noun] = dict()
                 questions = Client.ENTITIES_QUESTION[entity_type]
 
-                qa_model_result = [] if len(questions) == 0 else Client.qa_model.predict(
+                qa_model_result = [] if len(questions) == 0 else Client.qa_repository.getData(
                     (original_text, noun, questions))
                 result_answer = list(map(
                     lambda tuple_of_question_answer: tuple_of_question_answer[1], qa_model_result))
@@ -226,19 +227,19 @@ class Client:
                     _this_paragraph_dictionary[noun][answer] = dict()
             return
         else:
-            data = [sent.text for sent in sentences]
+            data = [sent.text for sent in number_of_sentences]
             X = np.arange(len(data)).reshape(-1, 1)
 
             def distance(x, y):
-                return Client.clustering_model.wmd.wmdistance(Client.input_preparator.preprocess(
+                return Client.wmd.wmdistance(Client.input_preparator.preprocess(
                     data[int(x[0])]), Client.input_preparator.preprocess(data[int(y[0])]))
 
             proximity_matrix = pairwise_distances(X, X, metric=distance)
-            best_k, best_cluster = Client.clustering_model.predict(
-                X, len(sentences), proximity_matrix)
+            best_k, best_cluster = Client.clustering_repository.getData(
+                X, len(number_of_sentences), list(proximity_matrix))
             if np.all(best_cluster == best_cluster[0]):
-                noun_ent_type_array = Client.spacy_model.convert_spacy_object_to_noun_chunk_and_entity_type_array(
-                    spacy_doc_from_summary)
+                noun_ent_type_array = Client.spacy_repository.get_noun_chunks_with_entity_type_prediction(
+                    summary)
                 for noun, entity_type in noun_ent_type_array:
                     current_level_node = _get_node(
                         _get_id(_common_data), noun, _parent_id)
@@ -247,7 +248,7 @@ class Client:
                             _this_paragraph_dictionary.keys()):
                         _this_paragraph_dictionary[noun] = dict()
                     questions = Client.ENTITIES_QUESTION[entity_type]
-                    qa_model_result = [] if len(questions) == 0 else Client.qa_model.predict(
+                    qa_model_result = [] if len(questions) == 0 else Client.qa_repository.getData(
                         (original_text, noun, questions))
                     result_answer = list(map(
                         lambda tuple_of_question_answer: tuple_of_question_answer[1], qa_model_result))
@@ -257,7 +258,7 @@ class Client:
                         _this_paragraph_dictionary[noun][answer] = dict()
             return Client.algorithm(
                 original_text,
-                sentences.join('. '),
+                number_of_sentences.join('. '),
                 full_text,
                 _this_paragraph_dictionary,
                 _common_data,

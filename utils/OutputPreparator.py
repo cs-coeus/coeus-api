@@ -6,7 +6,7 @@ import torch
 class OutputPreparator:
 
     def __init__(self):
-        OutputPreparator.THRESHOLD = 0.6
+        OutputPreparator.THRESHOLD = 0.4
         if torch.cuda.is_available():
             spacy.require_gpu()
         OutputPreparator.nlp = spacy.load('en_core_web_lg')
