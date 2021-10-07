@@ -25,13 +25,13 @@ def semi_structured_predict():
             token = request.headers.get('Authorization').split(' ')[1]
             if token != authentication_token:
                 return jsonify({"error": "Unauthorized request"}), 403
-        topic = request.json['topic']
-        if topic is not None:
+        wiki_path = request.json['wiki_path']
+        if wiki_path is not None:
             try:
                 result = Client.generate_mind_map_from_semi_structure_text(topic)
                 return jsonify({"result": result})
             except Exception as e:
-                print(topic)
+                print(wiki_path)
                 print(e)
                 return jsonify({"error": "Data format wrong"}), 400
     return jsonify({"error": "Data is invalid or not exist"}), 400
