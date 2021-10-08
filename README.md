@@ -8,7 +8,7 @@ Request: `None`
 
 Response: `'OK'` with HTTP Status `200`
 
-### `POST /semi-structured/predict`
+### `POST /predict/semi-structured`
 Request:
 - `"wiki_path"` is a path to wikipedia document.
 ```json
@@ -43,7 +43,7 @@ Response:
 }
 ```
 
-### `POST /unstructured/predict`
+### `POST /predict/unstructured`
 Request:
 - `"topic"` is a string of the topic of an article.
 - `"text"` is a string of the content of an article.
