@@ -18,7 +18,7 @@ def health_check():
     return 'OK'
 
 
-@app.route('/semi-structured/predict', methods=['POST'])
+@app.route('/predict/semi-structured', methods=['POST'])
 def semi_structured_predict():
     if request.method == 'POST' and request.json is not None:
         if is_production:
@@ -37,7 +37,7 @@ def semi_structured_predict():
     return jsonify({"error": "Data is invalid or not exist"}), 400
 
 
-@app.route('/unstructured/predict', methods=['POST'])
+@app.route('/predict/unstructured', methods=['POST'])
 def unstructured_predict():
     if request.method == 'POST' and request.json is not None:
         if is_production:
