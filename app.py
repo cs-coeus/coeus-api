@@ -31,8 +31,8 @@ def semi_structured_predict():
                 result = Client.generate_mind_map_from_semi_structure_text(topic)
                 return jsonify({"result": result})
             except Exception as e:
-                print(wiki_path)
-                print(e)
+                print(wiki_path, flush=True)
+                print(e, flush=True)
                 return jsonify({"error": "Data format wrong"}), 400
     return jsonify({"error": "Data is invalid or not exist"}), 400
 
@@ -51,7 +51,8 @@ def unstructured_predict():
                 result = Client.generate_mind_map_from_unstructured_text(topic, text)
                 return jsonify({"result": result})
             except Exception as e:
-                print(topic)
-                print(e)
+                print(topic, flush=True)
+                print(text, flush=True)
+                print(e, flush=True)
                 return jsonify({"error": "Data format wrong"}), 400
     return jsonify({"error": "Data is invalid or not exist"}), 400
