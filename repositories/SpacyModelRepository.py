@@ -27,6 +27,17 @@ class SpacyModelRepository(DataRepository):
         return result
 
     @staticmethod
+    def get_sentences_prediction(data):
+        try:
+            response = requests.post(f"{SpacyModelRepository.base_url}/predict/sentences", json={"data": data}, headers=SpacyModelRepository.header).json()
+            result = response['result']
+        except Exception as e:
+            print(data, flush=True)
+            print(e, flush=True)
+            raise Exception('Something went wrong with spacy model sentence')
+        return result
+
+    @staticmethod
     def get_pos_prediction(data):
         try:
             response = requests.post(f"{SpacyModelRepository.base_url}/predict/pos", json={"data": data}, headers=SpacyModelRepository.header).json()

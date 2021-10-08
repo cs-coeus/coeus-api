@@ -205,6 +205,7 @@ class Client:
             _get_node):
         MIN_SENTENCE_THRESHOLD = 7
         summary = Client.summarize_repository.getData(curr_sentence)
+        sentences = Client.clustering_repository.get_sentences_prediction(summary)
         number_of_sentences = Client.spacy_repository.get_sentence_count_prediction(summary)
         if number_of_sentences <= MIN_SENTENCE_THRESHOLD:
             noun_ent_type_array = Client.spacy_repository.get_noun_chunks_with_entity_type_prediction(
@@ -227,7 +228,7 @@ class Client:
                     _this_paragraph_dictionary[noun][answer] = dict()
             return
         else:
-            data = [sent.text for sent in number_of_sentences]
+            data = sentences
             X = np.arange(len(data)).reshape(-1, 1)
 
             def distance(x, y):
@@ -236,7 +237,7 @@ class Client:
 
             proximity_matrix = pairwise_distances(X, X, metric=distance)
             best_k, best_cluster = Client.clustering_repository.getData(
-                X, len(number_of_sentences), proximity_matrix.tolist())
+                X, number_of_sentences, proximity_matrix.tolist())
             if np.all(best_cluster == best_cluster[0]):
                 noun_ent_type_array = Client.spacy_repository.get_noun_chunks_with_entity_type_prediction(
                     summary)
@@ -258,7 +259,7 @@ class Client:
                         _this_paragraph_dictionary[noun][answer] = dict()
             return Client.algorithm(
                 original_text,
-                number_of_sentences.join('. '),
+                sentences.join(' '),
                 full_text,
                 _this_paragraph_dictionary,
                 _common_data,
