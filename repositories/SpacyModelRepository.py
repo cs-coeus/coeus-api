@@ -13,23 +13,33 @@ config = dotenv_values(".env")
 class SpacyModelRepository(DataRepository):
     def __init__(self):
         SpacyModelRepository.base_url = 'http://coeus.sit.kmutt.ac.th/api/model/spacy'
-        SpacyModelRepository.header = {"Authorization": f"Bearer {authentication_token}"}
+        SpacyModelRepository.header = {
+            "Authorization": f"Bearer {authentication_token}"}
 
     @staticmethod
     def get_sentence_count_prediction(data):
         try:
-            response = requests.post(f"{SpacyModelRepository.base_url}/predict/sentences/count", json={"data": data}, headers=SpacyModelRepository.header).json()
+            response = requests.post(
+                f"{SpacyModelRepository.base_url}/predict/sentences/count",
+                json={
+                    "data": data},
+                headers=SpacyModelRepository.header).json()
             result = response['result']
         except Exception as e:
             print(data, flush=True)
             print(e, flush=True)
-            raise Exception('Something went wrong with spacy model sentence count')
+            raise Exception(
+                'Something went wrong with spacy model sentence count')
         return result
 
     @staticmethod
     def get_sentences_prediction(data):
         try:
-            response = requests.post(f"{SpacyModelRepository.base_url}/predict/sentences", json={"data": data}, headers=SpacyModelRepository.header).json()
+            response = requests.post(
+                f"{SpacyModelRepository.base_url}/predict/sentences",
+                json={
+                    "data": data},
+                headers=SpacyModelRepository.header).json()
             result = response['result']
         except Exception as e:
             print(data, flush=True)
@@ -40,7 +50,11 @@ class SpacyModelRepository(DataRepository):
     @staticmethod
     def get_pos_prediction(data):
         try:
-            response = requests.post(f"{SpacyModelRepository.base_url}/predict/pos", json={"data": data}, headers=SpacyModelRepository.header).json()
+            response = requests.post(
+                f"{SpacyModelRepository.base_url}/predict/pos",
+                json={
+                    "data": data},
+                headers=SpacyModelRepository.header).json()
             result = response['result']
         except Exception as e:
             print(data, flush=True)
@@ -51,12 +65,17 @@ class SpacyModelRepository(DataRepository):
     @staticmethod
     def get_noun_chunks_with_entity_type_prediction(data):
         try:
-            response = requests.post(f"{SpacyModelRepository.base_url}/predict/noun-chunks-with-entity-type", json={"data": data}, headers=SpacyModelRepository.header).json()
+            response = requests.post(
+                f"{SpacyModelRepository.base_url}/predict/noun-chunks-with-entity-type",
+                json={
+                    "data": data},
+                headers=SpacyModelRepository.header).json()
             result = response['result']
         except Exception as e:
             print(data, flush=True)
             print(e, flush=True)
-            raise Exception('Something went wrong with spacy model noun chunk with entity')
+            raise Exception(
+                'Something went wrong with spacy model noun chunk with entity')
         return result
 
     @staticmethod
