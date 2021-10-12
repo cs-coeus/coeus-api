@@ -28,7 +28,8 @@ def semi_structured_predict():
         wiki_path = request.json['wiki_path']
         if wiki_path is not None:
             try:
-                result = Client.generate_mind_map_from_semi_structure_text(wiki_path)
+                result = Client.generate_mind_map_from_semi_structure_text(
+                    wiki_path)
                 return jsonify({"result": result})
             except Exception as e:
                 print(wiki_path, flush=True)
@@ -48,7 +49,8 @@ def unstructured_predict():
         text = request.json['text']
         if topic is not None and text is not None:
             try:
-                result = Client.generate_mind_map_from_unstructured_text(topic, text)
+                result = Client.generate_mind_map_from_unstructured_text(
+                    topic, text)
                 return jsonify({"result": result})
             except Exception as e:
                 print(topic, flush=True)

@@ -13,12 +13,17 @@ config = dotenv_values(".env")
 class SummarizerModelRepository(DataRepository):
     def __init__(self):
         SummarizerModelRepository.base_url = 'http://coeus.sit.kmutt.ac.th/api/model/summarizer'
-        SummarizerModelRepository.header = {"Authorization": f"Bearer {authentication_token}"}
+        SummarizerModelRepository.header = {
+            "Authorization": f"Bearer {authentication_token}"}
 
     @staticmethod
     def get_prediction(data):
         try:
-            response = requests.post(f"{SummarizerModelRepository.base_url}/predict", json={"data": data}, headers=SummarizerModelRepository.header).json()
+            response = requests.post(
+                f"{SummarizerModelRepository.base_url}/predict",
+                json={
+                    "data": data},
+                headers=SummarizerModelRepository.header).json()
             result = response['result']
         except Exception as e:
             print(data, flush=True)

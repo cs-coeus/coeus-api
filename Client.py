@@ -66,7 +66,7 @@ class Client:
                                 for paragraph in paragraph_array_of_array]
         full_text = reduce(
             lambda body_1,
-                   body_2: body_1 + '\n' + body_2,
+            body_2: body_1 + '\n' + body_2,
             paragraph_text_array)
 
         output = Client.convert_to_final_json(
@@ -102,7 +102,7 @@ class Client:
                     dictionary[article_path[0]] = dict()
                 elif not is_topic:
                     dictionary[article_path[0]
-                    ][Client.paragraph_escape_character] = current_text_in_paragraph
+                               ][Client.paragraph_escape_character] = current_text_in_paragraph
             elif len(article_path) > 1:
                 curr_dict = dictionary.get(article_path[0])
                 recursive_generate_dictionary_from_paragraphs_array(
@@ -206,7 +206,8 @@ class Client:
         MIN_SENTENCE_THRESHOLD = 7
         summary = Client.summarize_repository.getData(curr_sentence)
         sentences = Client.spacy_repository.get_sentences_prediction(summary)
-        number_of_sentences = Client.spacy_repository.get_sentence_count_prediction(summary)
+        number_of_sentences = Client.spacy_repository.get_sentence_count_prediction(
+            summary)
         if number_of_sentences <= MIN_SENTENCE_THRESHOLD:
             noun_ent_type_array = Client.spacy_repository.get_noun_chunks_with_entity_type_prediction(
                 summary)

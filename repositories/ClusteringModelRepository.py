@@ -14,12 +14,20 @@ config = dotenv_values(".env")
 class ClusteringModelRepository(DataRepository):
     def __init__(self):
         ClusteringModelRepository.base_url = 'http://coeus.sit.kmutt.ac.th/api/model/clustering'
-        ClusteringModelRepository.header = {"Authorization": f"Bearer {authentication_token}"}
+        ClusteringModelRepository.header = {
+            "Authorization": f"Bearer {authentication_token}"}
 
     @staticmethod
     def get_prediction(X, total_sent, proximity_matrix):
         try:
-            response = requests.post(f"{ClusteringModelRepository.base_url}/predict", json={"data": [X, total_sent, proximity_matrix]}, headers=ClusteringModelRepository.header).json()
+            response = requests.post(
+                f"{ClusteringModelRepository.base_url}/predict",
+                json={
+                    "data": [
+                        X,
+                        total_sent,
+                        proximity_matrix]},
+                headers=ClusteringModelRepository.header).json()
             result = response['result']
         except Exception as e:
             print(X, total_sent, proximity_matrix, flush=True)
@@ -29,4 +37,5 @@ class ClusteringModelRepository(DataRepository):
 
     @staticmethod
     def getData(input: Tuple[List[str], int, List[List[int]]]) -> List[Any]:
-        return ClusteringModelRepository.get_prediction(input[0], input[1], input[2])
+        return ClusteringModelRepository.get_prediction(
+            input[0], input[1], input[2])
