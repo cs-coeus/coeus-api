@@ -28,7 +28,7 @@ def semi_structured_predict():
         wiki_path = request.json['wiki_path']
         if wiki_path is not None:
             try:
-                result = Client.generate_mind_map_from_semi_structure_text(topic)
+                result = Client.generate_mind_map_from_semi_structure_text(wiki_path)
                 return jsonify({"result": result})
             except Exception as e:
                 print(wiki_path, flush=True)

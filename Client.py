@@ -205,7 +205,7 @@ class Client:
             _get_node):
         MIN_SENTENCE_THRESHOLD = 7
         summary = Client.summarize_repository.getData(curr_sentence)
-        sentences = Client.clustering_repository.get_sentences_prediction(summary)
+        sentences = Client.spacy_repository.get_sentences_prediction(summary)
         number_of_sentences = Client.spacy_repository.get_sentence_count_prediction(summary)
         if number_of_sentences <= MIN_SENTENCE_THRESHOLD:
             noun_ent_type_array = Client.spacy_repository.get_noun_chunks_with_entity_type_prediction(
