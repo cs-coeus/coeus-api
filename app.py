@@ -2,6 +2,7 @@ import os
 
 from dotenv import dotenv_values
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from Client import Client
 
@@ -11,7 +12,7 @@ config = dotenv_values(".env")
 
 app = Flask(__name__)
 client = Client()
-
+CORS(app)
 
 @app.route('/healthcheck')
 def health_check():
