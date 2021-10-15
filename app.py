@@ -39,7 +39,7 @@ def semi_structured_predict():
                 result = Client.generate_mind_map_from_semi_structure_text(
                     wiki_path)
                 caches[wiki_path] = {
-                  'expire_time': datetime.now() + timedelta(minutes=cache_timeout_in_minute),
+                  'expire_time': datetime.now() + timedelta(minutes=CACHE_TIMEOUT_IN_MINUTE),
                   'result': result
                 }
                 return jsonify({"result": result})
