@@ -16,7 +16,7 @@ client = Client()
 CORS(app)
 
 caches = {}
-cache_timeout_in_minute = 30
+CACHE_TIMEOUT_IN_MINUTE = 30
 
 @app.route('/healthcheck')
 def health_check():
