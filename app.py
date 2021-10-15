@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timedelta
 
 from dotenv import dotenv_values
 from flask import Flask, jsonify, request
@@ -14,6 +15,9 @@ app = Flask(__name__)
 client = Client()
 CORS(app)
 
+caches = {}
+cache_timeout_in_minute = 30
+
 @app.route('/healthcheck')
 def health_check():
     return 'OK'
@@ -28,9 +32,16 @@ def semi_structured_predict():
                 return jsonify({"error": "Unauthorized request"}), 403
         wiki_path = request.json['wiki_path']
         if wiki_path is not None:
+            if wiki_path in caches.keys():
+              if datetime.now() < caches[wiki_path]['expire_time']:
+                return jsonify({"result": caches[wiki_path]['result']})
             try:
                 result = Client.generate_mind_map_from_semi_structure_text(
                     wiki_path)
+                caches[wiki_path] = {
+                  'expire_time': datetime.now() + timedelta(minutes=cache_timeout_in_minute),
+                  'result': result
+                }
                 return jsonify({"result": result})
             except Exception as e:
                 print(wiki_path, flush=True)
