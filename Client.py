@@ -9,14 +9,12 @@ from repositories.SpacyModelRepository import SpacyModelRepository
 from repositories.GensimRepository import GensimRepository
 from functools import reduce
 import numpy as np
-import gensim.downloader as api
 
 
 class Client:
 
     def __init__(self):
         Client.input_preparator = InputPreparator()
-        Client.wmd = api.load('word2vec-google-news-300')
         Client.summarize_repository = SummarizerModelRepository()
         Client.qa_repository = QuestionAnswerModelRepository()
         Client.clustering_repository = ClusteringModelRepository()
