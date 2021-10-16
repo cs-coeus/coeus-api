@@ -50,7 +50,7 @@ class ClusteringModelRepository(DataRepository):
                 headers=ClusteringModelRepository.header).json()
             result = response['result']
         except Exception as e:
-            print(X, total_sent, proximity_matrix, flush=True)
+            print(X, flush=True)
             print(e, flush=True)
             raise Exception('Something went wrong with summarizer model')
         return result
