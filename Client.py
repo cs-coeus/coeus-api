@@ -6,21 +6,21 @@ from repositories.SummarizerModelRepository import SummarizerModelRepository
 from repositories.QuestionAnswerModelRepository import QuestionAnswerModelRepository
 from repositories.ClusteringModelRepository import ClusteringModelRepository
 from repositories.SpacyModelRepository import SpacyModelRepository
+from repositories.GensimRepository import GensimRepository
 from functools import reduce
 import numpy as np
-import gensim.downloader as api
 
 
 class Client:
 
     def __init__(self):
         Client.input_preparator = InputPreparator()
-        Client.wmd = api.load('word2vec-google-news-300')
         Client.summarize_repository = SummarizerModelRepository()
         Client.qa_repository = QuestionAnswerModelRepository()
         Client.clustering_repository = ClusteringModelRepository()
         Client.spacy_repository = SpacyModelRepository()
         Client.wikipedia_repository = WikipediaRepository()
+        Client.gensim_repository = GensimRepository()
         Client.output_preparator = OutputPreparator()
         Client.paragraph_escape_character = '_paragraph'
         Client.ID_KEY_STRING = 'id'
@@ -75,7 +75,7 @@ class Client:
                     input_array),
                 full_text))
 
-        post_processed = OutputPreparator.post_processing(output)
+        post_processed = OutputPreparator.post_processing(output, True)
         return post_processed
 
     @staticmethod
@@ -89,7 +89,7 @@ class Client:
         output = Client.convert_to_final_json(
             Client.convert_to_intermediate_json(input_dictionary, paragraphs))
 
-        post_processed = OutputPreparator.post_processing(output)
+        post_processed = OutputPreparator.post_processing(output, False)
         return post_processed
 
     @staticmethod
@@ -233,7 +233,7 @@ class Client:
             X = np.arange(len(data)).reshape(-1, 1)
 
             def distance(x, y):
-                return Client.wmd.wmdistance(Client.input_preparator.preprocess(
+                return Client.gensim_repository.get_wmd_between_sentence(Client.input_preparator.preprocess(
                     data[int(x[0])]), Client.input_preparator.preprocess(data[int(y[0])]))
 
             proximity_matrix = pairwise_distances(X, X, metric=distance)

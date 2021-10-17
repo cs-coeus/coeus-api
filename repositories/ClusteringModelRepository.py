@@ -21,7 +21,7 @@ class ClusteringModelRepository(DataRepository):
     def get_prediction(X, total_sent, proximity_matrix):
         try:
             response = requests.post(
-                f"{ClusteringModelRepository.base_url}/predict",
+                f"{ClusteringModelRepository.base_url}/predict/agglomerative-clustering",
                 json={
                     "data": [
                         X,
@@ -39,3 +39,18 @@ class ClusteringModelRepository(DataRepository):
     def getData(input: Tuple[List[str], int, List[List[int]]]) -> List[Any]:
         return ClusteringModelRepository.get_prediction(
             input[0], input[1], input[2])
+
+    @staticmethod
+    def get_k_medoids_prediction(X):
+        try:
+            response = requests.post(
+                f"{ClusteringModelRepository.base_url}/predict/k-medoids",
+                json={
+                    "data": X},
+                headers=ClusteringModelRepository.header).json()
+            result = response['result']
+        except Exception as e:
+            print(X, flush=True)
+            print(e, flush=True)
+            raise Exception('Something went wrong with summarizer model')
+        return result
