@@ -52,13 +52,15 @@ def semi_structured_predict():
 
 @app.route('/predict/unstructured', methods=['POST'])
 def unstructured_predict():
-    if request.method == 'POST' and request.json is not None:
+    if request.method == 'POST':
         if is_production:
             token = request.headers.get('Authorization').split(' ')[1]
             if token != authentication_token:
                 return jsonify({"error": "Unauthorized request"}), 403
-        topic = request.json['topic']
-        text = request.json['text']
+        topic = request.form['topic']
+        text = request.files['text']
+        if text.filename == '':
+            text = ''
         if topic is not None and text is not None:
             try:
                 result = Client.generate_mind_map_from_unstructured_text(
