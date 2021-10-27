@@ -45,7 +45,11 @@ class FileParser:
             'Content-type': 'application/pdf',
             'Accept': 'text/plain'
         }
-        response = requests.request("PUT", "http://coeus.sit.kmutt.ac.th/api/apache/tika/tika", headers=headers, data=payload, files=files)
+        try:
+            response = requests.request("PUT", "http://coeus.sit.kmutt.ac.th/api/apache/tika/tika", headers=headers, data=payload, files=files)
+        except requests.exceptions.RequestException as err:
+            print(err)
+            return ''
         return response.text
 
     def parse_docx(file):
