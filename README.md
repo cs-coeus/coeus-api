@@ -43,7 +43,7 @@ Response:
 }
 ```
 
-### `POST /predict/unstructured`
+### `POST /predict/unstructured/text`
 Request:
 - `"topic"` is a string of the topic of an article.
 - `"text"` is a string of the content of an article.
@@ -53,6 +53,43 @@ Request:
   "text": "In the summer of 2017, the Toelupe family heard about a little blue house in Provo, Utah, ..."
 }
 ```
+Response:
+`"result"` is an array of an array of edges and nodes.
+```json
+{
+    "result": {
+        "edges": [
+            {
+                "childId": 2,
+                "parentId": 1
+            },
+            .
+            .
+            .
+        ],
+        "nodes": [
+            {
+                "id": 1,
+                "text": "News - Apple helps Encircle expand..."
+            },
+            .
+            .
+            .
+        ]
+    }
+}
+```
+
+### `POST /predict/unstructured/file`
+Request: FormData
+- `"topic"` is a string of the topic of an article.
+- `"file"` is a file sent via formdata.
+
+| key | type | value |
+| --- |----- |------ |
+| topic| string| topic_name|
+| file| file| file_name.txt|
+
 Response:
 `"result"` is an array of an array of edges and nodes.
 ```json

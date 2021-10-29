@@ -1,6 +1,5 @@
 from sklearn.metrics import pairwise_distances
 
-from utils.FileParser import FileParser
 from utils.InputPreparator import InputPreparator
 from utils.OutputPreparator import OutputPreparator
 from repositories.WikipediaRepository import WikipediaRepository
@@ -16,7 +15,6 @@ import numpy as np
 class Client:
 
     def __init__(self):
-        Client.file_parser = FileParser()
         Client.input_preparator = InputPreparator()
         Client.summarize_repository = SummarizerModelRepository()
         Client.qa_repository = QuestionAnswerModelRepository()
@@ -82,8 +80,7 @@ class Client:
         return post_processed
 
     @staticmethod
-    def generate_mind_map_from_unstructured_text(title, file):
-        paragraphs = Client.file_parser.parse_file(file)
+    def generate_mind_map_from_unstructured_text(title, paragraphs):
         input_dictionary = {
             title: {
                 Client.paragraph_escape_character: [
